@@ -1,0 +1,42 @@
+{
+  "name": "metrika-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev --name init",
+    "db:seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "lucide-react": "^0.468.0",
+    "recharts": "^2.13.3",
+    "framer-motion": "^11.11.17",
+    "zod": "^3.23.8",
+    "zustand": "^5.0.1",
+    "@prisma/client": "^6.0.0"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "eslint": "^9.16.0",
+    "@eslint/eslintrc": "^3.2.0",
+    "eslint-config-next": "^15.0.0",
+    "prisma": "^6.0.0",
+    "vitest": "^2.1.8",
+    "tsx": "^4.19.2",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2"
+  }
+}

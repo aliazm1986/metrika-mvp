@@ -1,0 +1,19 @@
+node_modules/
+.next/
+out/
+coverage/
+*.log
+.env
+.env.*
+!.env.example
+prisma/dev.db
+prisma/dev.db-journal
+.vercel/
+tsconfig.tsbuildinfo
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json

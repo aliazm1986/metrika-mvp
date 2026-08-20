@@ -1,0 +1,21 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+enum ProjectStatus { DRAFT ACTIVE FUNDED COMPLETED }
+enum RiskLevel { LOW MEDIUM HIGH }
+enum TransactionStatus { PENDING COMPLETED FAILED CANCELLED }
+enum ListingStatus { ACTIVE SOLD CANCELLED }
+model User { id String @id @default(cuid()); email String @unique; name String?; createdAt DateTime @default(now()); profile UserProfile?; holdings Holding[]; transactions Transaction[]; watchlist WatchlistItem[]; notifications Notification[] }
+model UserProfile { id String @id @default(cuid()); userId String @unique; phone String?; city String?; kycStatus String @default("SIMULATED"); user User @relation(fields:[userId], references:[id], onDelete: Cascade) }
+model Project { id String @id @default(cuid()); slug String @unique; name String; code String @unique; city String; type String; stage String; status ProjectStatus @default(ACTIVE); risk RiskLevel; funding Int; unitPrice Int; minInvestment Int; completion String; area Int; description String; createdAt DateTime @default(now()); updatedAt DateTime @updatedAt; images ProjectImage[]; documents ProjectDocument[]; milestones ProjectMilestone[]; updates ProjectUpdate[]; units InvestmentUnit[]; listings MarketplaceListing[]; watchlist WatchlistItem[]; @@index([city,status,risk]) }
+model ProjectImage { id String @id @default(cuid()); url String; alt String; projectId String; project Project @relation(fields:[projectId], references:[id], onDelete: Cascade) }
+model ProjectDocument { id String @id @default(cuid()); title String; kind String; url String; projectId String; project Project @relation(fields:[projectId], references:[id], onDelete: Cascade) }
+model ProjectMilestone { id String @id @default(cuid()); title String; status String; dueDate DateTime?; projectId String; project Project @relation(fields:[projectId], references:[id], onDelete: Cascade) }
+model ProjectUpdate { id String @id @default(cuid()); title String; body String; publishedAt DateTime @default(now()); projectId String; project Project @relation(fields:[projectId], references:[id], onDelete: Cascade) }
+model InvestmentUnit { id String @id @default(cuid()); projectId String; unitSize Float; price Int; project Project @relation(fields:[projectId], references:[id], onDelete: Cascade); holdings Holding[] }
+model Holding { id String @id @default(cuid()); userId String; unitId String; quantity Float; averagePrice Int; user User @relation(fields:[userId], references:[id], onDelete: Cascade); unit InvestmentUnit @relation(fields:[unitId], references:[id], onDelete: Cascade); @@index([userId]) }
+model PortfolioSnapshot { id String @id @default(cuid()); userId String; value Int; capturedAt DateTime @default(now()); user User @relation(fields:[userId], references:[id], onDelete: Cascade) }
+model Transaction { id String @id @default(cuid()); userId String; type String; amount Int; status TransactionStatus @default(PENDING); metadata Json?; createdAt DateTime @default(now()); user User @relation(fields:[userId], references:[id], onDelete: Cascade); @@index([userId,createdAt]) }
+model MarketplaceListing { id String @id @default(cuid()); projectId String; sellerCode String; units Float; askingPrice Int; priceChange Float; status ListingStatus @default(ACTIVE); createdAt DateTime @default(now()); project Project @relation(fields:[projectId], references:[id], onDelete: Cascade); @@index([projectId,status]) }
+model WatchlistItem { id String @id @default(cuid()); userId String; projectId String; createdAt DateTime @default(now()); user User @relation(fields:[userId], references:[id], onDelete: Cascade); project Project @relation(fields:[projectId], references:[id], onDelete: Cascade); @@unique([userId,projectId]) }
+model Notification { id String @id @default(cuid()); userId String; title String; body String; readAt DateTime?; createdAt DateTime @default(now()); user User @relation(fields:[userId], references:[id], onDelete: Cascade) }
+model AuditLog { id String @id @default(cuid()); userId String?; action String; metadata Json?; createdAt DateTime @default(now()); @@index([action,createdAt]) }
